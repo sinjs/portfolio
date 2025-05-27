@@ -36,10 +36,10 @@ function App() {
         className="absolute bottom-0 w-full h-12 bg-black"
         style={{ zIndex: windows.length + 1 }}
       >
-        <div className="w-full bg-green-500  border-glow h-px absolute"></div>
+        <div className="w-full bg-green-500 border-glow h-px absolute"></div>
         <div className="h-full w-full flex items-center p-1 gap-1">
           <button
-            className="h-10 w-10 flex justify-center items-center bg-green-500 text-black text-xl"
+            className="h-10 w-10 flex justify-center items-center bg-green-500/20 text-glow text-xl"
             onClick={() =>
               createWindow({
                 title: "Example",
@@ -55,7 +55,7 @@ function App() {
             return (
               <button
                 className={cn(
-                  "h-10 w-10 flex justify-center items-center",
+                  "h-10 w-10 flex justify-center items-center text-glow",
                   focused && "bg-green-500/10"
                 )}
                 onClick={() => focusWindow(window.id)}
