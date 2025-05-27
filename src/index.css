@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.border-glow {
+  @apply shadow-[0_0_5px] inset-shadow-[0_0_5px];
+}
+
+.text-glow {
+  @apply text-shadow-[0_0_5px];
+}
