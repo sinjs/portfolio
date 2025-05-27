@@ -2,13 +2,12 @@ import { forwardRef, type MouseEvent, type ReactNode } from "react";
 
 import xIcon from "../assets/x.png";
 import { cn } from "../lib/utils";
-import type { WindowPosition } from "../lib/window";
+import type { Window as WindowType } from "../lib/window";
 
 export const Window = forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
-    position: WindowPosition;
-    title?: string;
+    window: WindowType;
     children?: ReactNode;
     onClose?: () => unknown;
     onTitlePointerDown?: (e: MouseEvent) => unknown;
@@ -16,8 +15,7 @@ export const Window = forwardRef<
 >(
   (
     {
-      position,
-      title,
+      window,
       children,
       onClose,
       onTitlePointerDown,
@@ -36,8 +34,8 @@ export const Window = forwardRef<
         )}
         {...props}
         style={{
-          top: position.y,
-          left: position.x,
+          top: window.position.y,
+          left: window.position.x,
           ...style,
         }}
       >
@@ -45,7 +43,7 @@ export const Window = forwardRef<
           className="h-9 w-full flex items-center justify-between"
           onPointerDown={onTitlePointerDown}
         >
-          <span className="pl-3 select-none">{title}</span>
+          <span className="pl-3 select-none">{window.title}</span>
           <div className="flex h-full items-center gap-2">
             {onClose && (
               <div

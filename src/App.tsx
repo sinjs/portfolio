@@ -17,11 +17,10 @@ function App() {
         return (
           <Window
             key={window.id}
-            title={window.title}
+            window={window}
             onClose={() => closeWindow(window.id)}
             onMouseDown={() => focusWindow(window.id)}
             onTitlePointerDown={(e) => onTitlePointerDown(window.id, e)}
-            position={window.position}
             style={{ zIndex: index + 1 }}
           />
         );
