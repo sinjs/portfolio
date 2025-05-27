@@ -7,6 +7,19 @@ export type WindowManagerOptions = {
   initialFocus?: WindowId;
 };
 
+function constructWindow(newWindow: NewWindow): Window {
+  return {
+    id: newWindow.id ?? crypto.randomUUID(),
+    title: newWindow.title,
+    position: {
+      x: newWindow.initialX ?? 0,
+      y: newWindow.initialY ?? 0,
+      prevX: 0,
+      prevY: 0,
+    },
+  };
+}
+
 export function useWindowManager({
   initialFocus,
   ...options
@@ -16,16 +29,7 @@ export function useWindowManager({
       if (window.id && windows.slice(0, index).some((w) => w.id === window.id))
         throw new Error(`Window with ID ${window.id} already exists.`);
 
-      return {
-        id: crypto.randomUUID(),
-        title: window.title,
-        position: {
-          x: window.initialX ?? 0,
-          y: window.initialY ?? 0,
-          prevX: 0,
-          prevY: 0,
-        },
-      };
+      return constructWindow(window);
     }) ?? [];
 
   const [windows, setWindows] = useImmer<Window[]>(initialWindows);
@@ -44,16 +48,18 @@ export function useWindowManager({
     return windows.find((w) => w.id === id) ?? null;
   }
 
-  function createWindow(newWindow: Omit<Window, "id"> & { id?: WindowId }) {
+  function createWindow(newWindow: NewWindow) {
     if (newWindow.id && hasWindow(newWindow.id))
       throw new Error(`Window with ID ${newWindow.id} already exists.`);
 
-    const window = { id: crypto.randomUUID(), ...newWindow };
+    const window = constructWindow(newWindow);
 
+    setWindowOrder((windowOrder) => {
+      windowOrder.push(window.id);
+    });
     setWindows((windows) => {
       windows.push(window);
     });
-    setWindowOrder((windowOrder) => windowOrder.push(window.id));
   }
 
   function closeWindow(id: WindowId) {
@@ -104,6 +110,7 @@ export function useWindowManager({
   }
 
   return {
+    unorderedWindows: windows,
     windows: windowOrder
       .map((id) => getWindow(id))
       .filter((window) => window !== null),
