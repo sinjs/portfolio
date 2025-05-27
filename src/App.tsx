@@ -1,4 +1,4 @@
-import { forwardRef, useState, type MouseEvent, type ReactNode } from "react";
+import { forwardRef, type MouseEvent, type ReactNode } from "react";
 import { useImmer } from "use-immer";
 
 import xIcon from "./assets/x.png";
@@ -10,9 +10,8 @@ const Window = forwardRef<
     title?: string;
     children?: ReactNode;
     onClose?: () => unknown;
-    focused?: boolean;
   }
->(({ title, children, onClose, focused, className, style, ...props }, ref) => {
+>(({ title, children, onClose, className, style, ...props }, ref) => {
   const [position, setPosition] = useImmer({
     x: 50,
     y: 50,
@@ -82,11 +81,7 @@ const Window = forwardRef<
         </div>
       </div>
       <div className="w-full bg-green-500 border-glow h-px absolute"></div>
-      <div className="p-3">
-        <pre>
-          $ ls{"\n"}Hello World{"\n"}${" "}
-        </pre>
-      </div>
+      <div className="p-3">{children}</div>
     </div>
   );
 });
@@ -140,7 +135,6 @@ function App() {
             title={window.title}
             onClose={() => closeWindow(window.id)}
             onMouseDown={() => focusWindow(window.id)}
-            focused={window.focused}
             style={{ zIndex: index + 1 }}
           />
         );
