@@ -8,6 +8,7 @@ export const Window = forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
     window: WindowType;
+    focused: boolean;
     children?: ReactNode;
     onClose?: () => unknown;
     onTitlePointerDown?: (e: MouseEvent) => unknown;
@@ -16,6 +17,7 @@ export const Window = forwardRef<
   (
     {
       window,
+      focused,
       children,
       onClose,
       onTitlePointerDown,
@@ -28,10 +30,7 @@ export const Window = forwardRef<
     return (
       <div
         ref={ref}
-        className={cn(
-          "absolute bg-black w-[600px] h-[300px] border-glow border",
-          className
-        )}
+        className={cn("absolute bg-black w-[600px] h-[300px] crt", className)}
         {...props}
         style={{
           top: window.position.y,
@@ -40,28 +39,32 @@ export const Window = forwardRef<
         }}
       >
         <div
-          className="h-9 w-full flex items-center justify-between"
-          onPointerDown={onTitlePointerDown}
+          className={cn(!focused && "opacity-75", "border-glow border h-full")}
         >
-          <span className="pl-3 select-none">{window.title}</span>
-          <div className="flex h-full items-center gap-2">
-            {onClose && (
-              <div
-                className="flex h-full items-center justify-center w-9"
-                onPointerDown={(e) => e.stopPropagation()}
-                onClick={() => onClose()}
-              >
-                <img
-                  className="block h-2.5 w-2.5 drop-shadow-[0_0_5px]"
-                  draggable={false}
-                  src={xIcon}
-                />
-              </div>
-            )}
+          <div
+            className="h-9 w-full flex items-center justify-between"
+            onPointerDown={onTitlePointerDown}
+          >
+            <span className="pl-3 select-none">{window.title}</span>
+            <div className="flex h-full items-center gap-2">
+              {onClose && (
+                <div
+                  className="flex h-full items-center justify-center w-9"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={() => onClose()}
+                >
+                  <img
+                    className="block h-2.5 w-2.5 drop-shadow-[0_0_5px]"
+                    draggable={false}
+                    src={xIcon}
+                  />
+                </div>
+              )}
+            </div>
           </div>
+          <div className="w-full bg-green-500 border-glow h-px absolute"></div>
+          <div className="p-3">{children}</div>
         </div>
-        <div className="w-full bg-green-500 border-glow h-px absolute"></div>
-        <div className="p-3">{children}</div>
       </div>
     );
   }
