@@ -11,11 +11,16 @@ function constructWindow(newWindow: NewWindow): Window {
   return {
     id: newWindow.id ?? crypto.randomUUID(),
     title: newWindow.title,
+    content: newWindow.content,
     position: {
       x: newWindow.initialX ?? 0,
       y: newWindow.initialY ?? 0,
       prevX: 0,
       prevY: 0,
+    },
+    size: {
+      width: newWindow.initialWidth ?? 600,
+      height: newWindow.initialHeight ?? 300,
     },
   };
 }
@@ -109,6 +114,26 @@ export function useWindowManager({
     document.addEventListener("pointerup", handlePointerUp);
   }
 
+  function onWindowPointerDown(id: WindowId, e: MouseEvent) {
+    const handlePointerMove = (e: PointerEvent) => {
+      setWindows((windows) => {
+        const draft = windows.find((w) => w.id === id)!.size;
+        const deltaX = e.clientX - draft.width;
+        const deltaY = e.clientY - draft.height;
+        draft.width += deltaX;
+        draft.height += deltaY;
+      });
+    };
+
+    const handlePointerUp = () => {
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
+    };
+
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
+  }
+
   return {
     unorderedWindows: windows,
     windows: windowOrder
@@ -119,5 +144,6 @@ export function useWindowManager({
     closeWindow,
     focusWindow,
     onTitlePointerDown,
+    onWindowPointerDown,
   };
 }

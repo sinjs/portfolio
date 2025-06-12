@@ -12,6 +12,7 @@ export const Window = forwardRef<
     children?: ReactNode;
     onClose?: () => unknown;
     onTitlePointerDown?: (e: MouseEvent) => unknown;
+    onWindowPointerDown?: (e: MouseEvent) => unknown;
   }
 >(
   (
@@ -21,6 +22,7 @@ export const Window = forwardRef<
       children,
       onClose,
       onTitlePointerDown,
+      onWindowPointerDown,
       className,
       style,
       ...props
@@ -30,16 +32,21 @@ export const Window = forwardRef<
     return (
       <div
         ref={ref}
-        className={cn("absolute bg-black w-[600px] h-[300px] crt", className)}
+        className={cn("absolute bg-black crt", className)}
         {...props}
         style={{
           top: window.position.y,
           left: window.position.x,
+          width: window.size.width,
+          height: window.size.height,
           ...style,
         }}
       >
         <div
-          className={cn(!focused && "opacity-75", "border-glow border h-full")}
+          className={cn(
+            focused ? "text-green-500" : "text-green-500/75",
+            "border-glow border h-full flex flex-col"
+          )}
         >
           <div
             className="h-9 w-full flex items-center justify-between"
@@ -62,8 +69,13 @@ export const Window = forwardRef<
               )}
             </div>
           </div>
-          <div className="w-full bg-green-500 border-glow h-px absolute"></div>
-          <div className="p-3">{children}</div>
+          <div
+            className={cn(
+              "w-full border-glow h-px",
+              focused ? "bg-green-500" : "bg-green-500/75"
+            )}
+          ></div>
+          <div className="grow">{children}</div>
         </div>
       </div>
     );

@@ -2,7 +2,77 @@ import { Window } from "./components/window";
 import { useWindowManager } from "./hooks/use-window-manager";
 import { cn } from "./lib/utils";
 
+/*
+function ProjectsWindow() {
+  return (
+    <div className="grid grid-cols-3 p-3 gap-3">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </div>
+  );
+}
+*/
+
+function AboutWindow() {
+  return (
+    <div className="flex flex-col justify-between h-full p-3">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-xl font-bold">Welcome!</h1>
+        <p className="text-sm">
+          I'm <strong>sin</strong>, a developer focusing on low-level software
+          and full-stack web development.
+        </p>
+        <p className="text-sm">
+          You can find me on{" "}
+          <a
+            className="font-bold underline"
+            href="https://github.com/sinjs"
+            target="_blank"
+          >
+            GitHub
+          </a>
+          .
+        </p>
+        <div className="flex gap-2 pt-1">
+          <button
+            className="border crt border-glow px-2 py-1 text-sm"
+            onClick={() => {}}
+          >
+            Projects
+          </button>
+          <button className="border crt border-glow px-2 py-1 text-sm">
+            Languages
+          </button>
+        </div>
+      </div>
+      <div>
+        {/* HACK: To get the glowing effect, you have to do this for some reason */}
+        <p className="select-none -ml-1 " style={{ letterSpacing: -5 }}>
+          -----------------------------------------------------------------------------------------------------------------------------
+        </p>
+        <p className="text-xs">
+          This website is still under construction.{" "}
+          <a
+            className="font-bold underline"
+            href="https://github.com/sinjs/portfolio"
+            target="_blank"
+          >
+            Source Code
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
 function App() {
+  // HACK: fix this please
   const {
     windows,
     unorderedWindows,
@@ -10,11 +80,16 @@ function App() {
     closeWindow,
     focusWindow,
     onTitlePointerDown,
+    onWindowPointerDown,
   } = useWindowManager({
     initialWindows: [
-      { id: "hello", title: "Hello" },
-      { title: "World", initialX: 300, initialY: 100 },
-      { title: "Three", initialX: 600, initialY: 300 },
+      {
+        title: "About",
+        content: <AboutWindow />,
+
+        initialX: window.innerWidth / 2 - 300,
+        initialY: window.innerHeight / 2 - 150 - 48,
+      },
     ],
   });
 
@@ -31,8 +106,11 @@ function App() {
             onClose={() => closeWindow(window.id)}
             onMouseDown={() => focusWindow(window.id)}
             onTitlePointerDown={(e) => onTitlePointerDown(window.id, e)}
+            onWindowPointerDown={(e) => onWindowPointerDown(window.id, e)}
             style={{ zIndex: index + 1 }}
-          />
+          >
+            {window.content}
+          </Window>
         );
       })}
       <div
@@ -46,6 +124,7 @@ function App() {
             onClick={() =>
               createWindow({
                 title: "Example",
+                content: <p>Example</p>,
                 initialX: Math.floor(Math.random() * window.innerWidth),
                 initialY: Math.floor(Math.random() * (window.innerHeight - 40)),
               })
