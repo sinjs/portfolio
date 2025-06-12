@@ -114,7 +114,7 @@ export function useWindowManager({
     document.addEventListener("pointerup", handlePointerUp);
   }
 
-  function onWindowPointerDown(id: WindowId, e: MouseEvent) {
+  function onWindowPointerDown(id: WindowId, _e: MouseEvent) {
     const handlePointerMove = (e: PointerEvent) => {
       setWindows((windows) => {
         const draft = windows.find((w) => w.id === id)!.size;
